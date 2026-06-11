@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>21Hiking Stock Manager</title>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <header class="header">
+    <h1>21Hiking Stock Manager</h1>
+    <button id="logoutBtn">Logout</button>
+  </header>
+
+  <section class="dashboard">
+
+    <div class="card">
+      <h3>สินค้าในสต็อก</h3>
+      <p id="stockCount">0</p>
+    </div>
+
+    <div class="card">
+      <h3>รายรับรวม</h3>
+      <p id="incomeTotal">0 ฿</p>
+    </div>
+
+    <div class="card">
+      <h3>รายจ่ายรวม</h3>
+      <p id="expenseTotal">0 ฿</p>
+    </div>
+
+    <div class="card">
+      <h3>กำไรสุทธิ</h3>
+      <p id="profitTotal">0 ฿</p>
+    </div>
+
+  </section>
+
+  <section class="container">
+
+    <div class="panel">
+
+      <h2>เพิ่มแบรนด์</h2>
+
+      <input
+        type="text"
+        id="brandName"
+        placeholder="ชื่อแบรนด์"
+      >
+
+      <button id="addBrandBtn">
+        เพิ่มแบรนด์
+      </button>
+
+    </div>
+
+    <div class="panel">
+
+      <h2>เพิ่มสินค้า</h2>
+
+      <input type="file" id="productImage">
+
+      <input
+        type="text"
+        id="productName"
+        placeholder="ชื่อสินค้า"
+      >
+
+      <select id="brandSelect"></select>
+
+      <input
+        type="number"
+        id="productCost"
+        placeholder="ต้นทุน"
+      >
+
+      <input
+        type="number"
+        id="productPrice"
+        placeholder="ราคาขาย"
+      >
+
+      <button id="addProductBtn">
+        เพิ่มสินค้า
+      </button>
+
+    </div>
+
+  </section>
+
+  <section class="panel">
+
+    <h2>รายการสินค้า</h2>
+
+    <div id="productList"></div>
+
+  </section>
+
+  <section class="panel">
+
+    <h2>เพิ่มรายจ่าย</h2>
+
+    <input
+      type="text"
+      id="expenseName"
+      placeholder="รายการ"
+    >
+
+    <input
+      type="number"
+      id="expenseAmount"
+      placeholder="จำนวนเงิน"
+    >
+
+    <button id="addExpenseBtn">
+      บันทึกรายจ่าย
+    </button>
+
+  </section>
+
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
