@@ -131,11 +131,17 @@ ${
           ${product.sell_price}
         )"
       >
-        ขายแล้ว
+        ✅ ขายแล้ว
       </button>
     `
     : ""
 }
+
+<button
+  onclick="deleteProduct('${product.id}')"
+>
+  🗑️ ลบสินค้า
+</button>
         </div>
 
       </div>
@@ -198,6 +204,7 @@ document
     productPrice.value = "";
 
     await loadProducts();
+    await loadDashboard();
 
     alert("เพิ่มสินค้าสำเร็จ");
 
@@ -315,3 +322,68 @@ async function loadDashboard() {
 }
 
 loadDashboard();
+const expenseTitle =
+  document.getElementById("expenseTitle");
+
+const expenseAmount =
+  document.getElementById("expenseAmount");
+
+document
+  .getElementById("addExpenseBtn")
+  .addEventListener("click", async () => {
+
+    const title =
+      expenseTitle.value.trim();
+
+    const amount =
+      Number(expenseAmount.value);
+
+    if (!title || !amount) {
+      alert("กรอกข้อมูลให้ครบ");
+      return;
+    }
+
+    const { error } =
+      await supabase
+        .from("expenses")
+        .insert([
+          {
+            title,
+            amount
+          }
+        ]);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    expenseTitle.value = "";
+    expenseAmount.value = "";
+
+    await loadDashboard();
+
+    alert("เพิ่มรายจ่ายสำเร็จ");
+
+  });
+window.deleteProduct = async (id) => {
+
+  const confirmDelete =
+    confirm("ต้องการลบสินค้านี้หรือไม่?");
+
+  if (!confirmDelete) return;
+
+  const { error } = await supabase
+    .from("products")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  await loadProducts();
+
+  alert("ลบสินค้าเรียบร้อย");
+};
