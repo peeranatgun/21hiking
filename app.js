@@ -121,7 +121,21 @@ async function loadProducts() {
             }
 
           </p>
-
+${
+  product.status !== "sold"
+    ? `
+      <button
+        onclick="markAsSold(
+          '${product.id}',
+          ${product.cost},
+          ${product.sell_price}
+        )"
+      >
+        ขายแล้ว
+      </button>
+    `
+    : ""
+}
         </div>
 
       </div>
@@ -190,3 +204,114 @@ document
   });
 
 loadProducts();
+window.markAsSold = async (
+  productId,
+  cost,
+  sellPrice
+) => {
+
+  const profit =
+    sellPrice - cost;
+
+  const { error: saleError } =
+    await supabase
+      .from("sales")
+      .insert([
+        {
+          product_id: productId,
+          cost,
+          sell_price: sellPrice,
+          profit
+        }
+      ]);
+
+  if (saleError) {
+    alert(saleError.message);
+    return;
+  }
+
+  const { error: productError } =
+    await supabase
+      .from("products")
+      .update({
+        status: "sold"
+      })
+      .eq("id", productId);
+
+  if (productError) {
+    alert(productError.message);
+    return;
+  }
+
+  await loadProducts();
+
+  await loadDashboard();
+
+  alert("ขายสินค้าแล้ว");
+
+};
+const incomeTotal =
+  document.getElementById(
+    "incomeTotal"
+  );
+
+const expenseTotal =
+  document.getElementById(
+    "expenseTotal"
+  );
+
+const profitTotal =
+  document.getElementById(
+    "profitTotal"
+  );
+
+async function loadDashboard() {
+
+  const sales =
+    await supabase
+      .from("sales")
+      .select("*");
+
+  const expenses =
+    await supabase
+      .from("expenses")
+      .select("*");
+
+  const totalIncome =
+    sales.data?.reduce(
+      (sum, item) =>
+        sum + item.sell_price,
+      0
+    ) || 0;
+
+  const totalProfit =
+    sales.data?.reduce(
+      (sum, item) =>
+        sum + item.profit,
+      0
+    ) || 0;
+
+  const totalExpense =
+    expenses.data?.reduce(
+      (sum, item) =>
+        sum + item.amount,
+      0
+    ) || 0;
+
+  incomeTotal.textContent =
+    totalIncome.toLocaleString() +
+    " ฿";
+
+  expenseTotal.textContent =
+    totalExpense.toLocaleString() +
+    " ฿";
+
+  profitTotal.textContent =
+    (
+      totalProfit -
+      totalExpense
+    ).toLocaleString() + " ฿";
+
+}
+
+loadDashboard();
